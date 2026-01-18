@@ -8,10 +8,5 @@ namespace MyCv.Controllers
     [ApiController]
     public class ValuesController : ControllerBase
     {
-
-        Claim claim = new Claim(
-            {
-            ClaimTypes.Name, "JohnDoe"
-            ,});
     }
 }
