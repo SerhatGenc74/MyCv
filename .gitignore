@@ -6,10 +6,6 @@
 *.cache
 *.log
 
-# App settings
-appsettings.json
-appsettings.Development.json
-
 # Node.js
 **/node_modules/
 **/npm-debug.log*
