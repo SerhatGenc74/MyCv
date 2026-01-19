@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MyCv.Models;
+using MyCv.Models.View;
 using MyCv.ViewModels;
 using MyCv.ViewModels.DataBase;
 
@@ -18,13 +19,18 @@ namespace MyCv.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            var ss = AdminDBOp.GetList(context);
-            return Ok(ss);
+            return Ok("Index");
         }
         [HttpGet("Login")]
-        public IActionResult Login()
+        public async Task<IActionResult> Login(string nickName, string Password)
         {
-            return Ok();
+            var result = AdminDBOp.Login(new User
+            {
+                NickName = nickName,
+                Password = Password
+            }, context).Result;
+
+            return Ok(result);
         }
 
     }

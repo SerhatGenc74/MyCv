@@ -20,7 +20,7 @@ namespace MyCv.Controllers
         [HttpPost("login")]
         public IActionResult Login([FromBody] LoginRequest request)
         {
-            var account = _context.AdminUsers.FirstOrDefault(u => u.NickName == request.Username && u.Password == request.Password);
+            var account = _context.AdminUsers.FirstOrDefault(u => u.NickName == request.Username);
             if (account == null)
             {
                 return Unauthorized("Invalid username or password");

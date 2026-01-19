@@ -10,7 +10,6 @@ public partial class AppDBContext : DbContext
         : base(options)
     {
     }
-
     public virtual DbSet<AdminUser> AdminUsers { get; set; }
 
     public virtual DbSet<Content> Contents { get; set; }
@@ -20,9 +19,6 @@ public partial class AppDBContext : DbContext
     public virtual DbSet<Project> Projects { get; set; }
 
     public virtual DbSet<ProjectDetail> ProjectDetails { get; set; }
-
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseSqlServer("Data Source=DESKTOP-QGPTUQ6\\SQLEXPRESS,1433;Initial Catalog=CVWebSiteDB;User ID=testuser;Password=1234;Trust Server Certificate=True");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
