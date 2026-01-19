@@ -3,46 +3,42 @@ version: '3.8'
 services:
   backend:
     build:
-      context: ./MyCv
+      context: ../MyCv
       dockerfile: Dockerfile.dev
     ports:
       - "5000:8080"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-    # DİKKAT: Eski 'volumes' satırları yerine bu blok geldi
     develop:
       watch:
-        # 1. C# kodları değişince dosyayı içeri at (Sync)
-        # 'dotnet watch' içeride çalıştığı için değişikliği görüp reload edecek
         - action: sync
-          path: ./MyCv
+          path: ../MyCv
           target: /app
           ignore:
-            - ./MyCv/bin
-            - ./MyCv/obj
-
-        # 2. Yeni kütüphane eklenirse (.csproj değişirse) baştan build al
+            - ../MyCv/bin
+            - ../MyCv/obj
         - action: rebuild
-          path: ./MyCv/MyCv.csproj
+          path: ./MyCv.csproj
 
   frontend:
     build:
-      context: ./MyCv/frontend
+      context: ./frontend
       dockerfile: Dockerfile.dev
     ports:
       - "3000:3000"
     develop:
       watch:
-        # 1. Kaynak kod değişirse içeri gönder (Hot Reload çalışır)
         - action: sync
-          path: ./MyCv/frontend/src
+          path: ./frontend/src
           target: /app/src
         
-        # 2. Public dosyaları (resim vs) değişirse içeri gönder
         - action: sync
-          path: ./MyCv/frontend/public
+          path: ./frontend/public
           target: /app/public
 
-        # 3. Yeni paket yüklenirse (package.json) baştan build al
         - action: rebuild
-          path: ./MyCv/frontend/package.json
+          path: ./frontend/package.json
+    environment:
+      - HOST=0.0.0.0  
+      - CHOKIDAR_USEPOLLING=true
+      - WATCHPACK_POLLING=true
