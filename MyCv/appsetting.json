@@ -4,8 +4,5 @@
       "Default": "Information",
       "Microsoft.AspNetCore": "Warning"
     }
-  },
-  "ConnectionStrings": {
-    "conn": "Data Source=DESKTOP-QGPTUQ6\\SQLEXPRESS,1433;Initial Catalog=CVWebSiteDB;User ID=testuser;Password=1234;Trust Server Certificate=True"
   }
 }
