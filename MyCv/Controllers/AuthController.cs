@@ -30,11 +30,9 @@ namespace MyCv.Controllers
 
             return Ok(new { Message = "Login successful" }); 
         }
-        
         [NonAction]
         public string GenerateJwtToken(AdminUser user)
         {
-
             var claims = new[]
             {
              new Claim(ClaimTypes.Name, user.NickName),

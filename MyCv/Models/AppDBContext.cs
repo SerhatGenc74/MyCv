@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using MyCv.Models.View;
 
 namespace MyCv.Models;
 
@@ -19,7 +20,7 @@ public partial class AppDBContext : DbContext
     public virtual DbSet<Project> Projects { get; set; }
 
     public virtual DbSet<ProjectDetail> ProjectDetails { get; set; }
-
+    public DbSet<User> Users { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<AdminUser>(entity =>
@@ -53,6 +54,9 @@ public partial class AppDBContext : DbContext
             entity.Property(e => e.Role)
                 .HasMaxLength(15)
                 .IsUnicode(false);
+            modelBuilder.Entity<User>()
+      .HasNoKey()
+      .ToView(null); // view değil, raw sql
         });
 
         modelBuilder.Entity<Content>(entity =>
