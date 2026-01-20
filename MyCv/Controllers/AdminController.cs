@@ -2,7 +2,6 @@
 using MyCv.Models;
 using MyCv.Models.View;
 using MyCv.ViewModels;
-using MyCv.ViewModels.DataBase;
 
 
 namespace MyCv.Controllers
@@ -29,7 +28,6 @@ namespace MyCv.Controllers
                 NickName = nickName,
                 Password = Password
             }, context).Result;
-
             return Ok(result);
         }
 
