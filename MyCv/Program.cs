@@ -6,7 +6,6 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<AppDBContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("conn")));
 
 
-
 builder.Services.AddHttpContextAccessor(); 
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
