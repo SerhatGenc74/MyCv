@@ -15,13 +15,16 @@ namespace MyCv.ViewModels
             {
                 Direction = System.Data.ParameterDirection.Output,
             };
-          
                 await _context.Database.ExecuteSqlRawAsync("EXEC AdminLogin @nickName, @Password, @userId OUTPUT",
-                  new SqlParameter("@nickName", user.NickName),
-                  new SqlParameter("@Password", user.Password),
-                outParam);
-         
-            return outParam.Value as string;
+             new SqlParameter("@nickName", user.NickName),
+            new SqlParameter("@Password", user.Password),
+             outParam);
+            
+                return new Result<string>
+                {
+                    IsSuccess = true,
+                    Data = outParam.Value.ToString() ?? string.Empty
+                };
         }
     }
 }
