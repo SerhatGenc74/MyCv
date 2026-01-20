@@ -5,8 +5,7 @@ using MyCv.Models;
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<AppDBContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("conn")));
 
-Console.WriteLine("ENV: " + builder.Environment.EnvironmentName);
-Console.WriteLine("CS: " + builder.Configuration.GetConnectionString("DefaultConnection"));
+
 
 builder.Services.AddHttpContextAccessor(); 
 builder.Services.AddDistributedMemoryCache();
@@ -66,6 +65,8 @@ builder.Services.AddCors(options =>
 
 
 var app = builder.Build();
+
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 app.UseCors("AllowAll");
 app.UseSession(); 
