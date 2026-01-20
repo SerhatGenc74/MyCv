@@ -53,7 +53,7 @@ namespace MyCv.ViewModels
                 Direction = ParameterDirection.Output
             };
             await _context.Database.ExecuteSqlRawAsync("EXEC SessionControl @userId, @isSessionOpen OUTPUT",
-                new SqlParameter("@isSessionOpen", userId),
+                new SqlParameter("@userId", userId),
                 outParam);
             return (bool)(outParam.Value ?? false);
         }

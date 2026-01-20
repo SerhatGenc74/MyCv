@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using MyCv.Models;
 using MyCv.Models.View;
 using MyCv.ViewModels;
@@ -11,7 +12,6 @@ namespace MyCv.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
     public class AdminController : ControllerBase
     {
         IConfiguration configuration;
@@ -27,7 +27,7 @@ namespace MyCv.Controllers
             return Ok("Index");
         }
         
-        [HttpGet("Login")]
+        [HttpPost("Login")]
         public async Task<IActionResult> Login(string nickName, string Password)
         {
             var result = AdminDBOp.Login(new User
@@ -35,6 +35,7 @@ namespace MyCv.Controllers
                 NickName = nickName,
                 Password = Password
             }, context).Result;
+
             if (result == null)
             {
                 return Unauthorized("Invalid username or password");
@@ -62,6 +63,7 @@ namespace MyCv.Controllers
         public async Task<IActionResult> FirstProfileEdit([FromBody] User user)
         {
             var userID = HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+            user.UserId = userID;
             if (userID.IsNullOrEmpty() ||!await AdminDBOp.SessionControl(userID, context))
                 throw new Exception("kullanıcısının oturumu kapalıdır.");
 

@@ -20,13 +20,13 @@ namespace MyCv.Controllers
             _context = context;
         }
         [HttpPost("login")]
-        public IActionResult Login([FromBody] LoginRequest request)
+        public IActionResult Login(string Username, string Password)
         {
             
             var result = AdminDBOp.Login(new User
             {
-                NickName = request.Username,
-                Password = request.Password
+                NickName = Username,
+                Password = Password
             }, _context).Result;
             if (result == null)
             {
