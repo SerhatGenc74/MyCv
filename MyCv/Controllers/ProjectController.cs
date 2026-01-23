@@ -10,14 +10,17 @@ namespace MyCv.Controllers
     public class ProjectController : ControllerBase
     {
         AppDBContext context;
-        public ProjectController(AppDBContext _context)
+        public ProjectController(AppDBContext _context, ProjectService _service)
         {
             context = _context;
+            service = _service;
         }
+        ProjectService service;
         [HttpGet]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return Ok();
+            var projects = await service.GetCachedProjectsAsync();
+            return Ok(projects);
         }
         [HttpPost("Add")]
         public async Task<IActionResult> Add([FromBody] vwProject project)
@@ -25,5 +28,6 @@ namespace MyCv.Controllers
             await ProjectDBOp.CreateProject(project, context);
             return Ok();
         }
+      
     }
 }

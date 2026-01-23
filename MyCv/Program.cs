@@ -3,11 +3,14 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using MyCv.Models;
+using MyCv.ViewModels;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<AppDBContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("conn")));
 
+builder.Services.AddMemoryCache();
 
+builder.Services.AddScoped<ProjectService>();
 builder.Services.AddHttpContextAccessor(); 
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
