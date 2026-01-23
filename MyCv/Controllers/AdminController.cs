@@ -26,15 +26,17 @@ namespace MyCv.Controllers
         {
             return Ok("Index");
         }
-        
+
         [HttpPost("Login")]
         public async Task<IActionResult> Login(string nickName, string Password)
         {
+            var deviceId = DeviceHelper.GetOrCreateDeviceId(HttpContext);
+            Console.WriteLine(deviceId);
             var result = AdminDBOp.Login(new User
             {
                 NickName = nickName,
                 Password = Password
-            }, context).Result;
+            }, deviceId, context).Result;
 
             if (result == null)
             {
@@ -64,7 +66,7 @@ namespace MyCv.Controllers
         {
             var userID = HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
             user.UserId = userID;
-            if (userID.IsNullOrEmpty() ||!await AdminDBOp.SessionControl(userID, context))
+            if (userID.IsNullOrEmpty() || !await AdminDBOp.SessionControl(userID, context))
                 throw new Exception("kullanıcısının oturumu kapalıdır.");
 
             //Giriş yapamadan ve Session Kontrol Yapmadan Edit yapamazın

@@ -8,7 +8,7 @@ namespace MyCv.ViewModels
 {
     public class AdminDBOp
     {
-        public static async Task<string> Login(User user, AppDBContext _context)
+        public static async Task<string> Login(User user, string deviceID, AppDBContext _context)
         {
 
 
@@ -16,9 +16,10 @@ namespace MyCv.ViewModels
             {
                 Direction = System.Data.ParameterDirection.Output,
             };
-            await _context.Database.ExecuteSqlRawAsync("EXEC AdminLogin @nickName, @Password, @userId OUTPUT",
+            await _context.Database.ExecuteSqlRawAsync("EXEC AdminLogin @nickName, @Password, @deviceID, @userId OUTPUT",
              new SqlParameter("@nickName", user.NickName),
              new SqlParameter("@Password", user.Password),
+             new SqlParameter("@deviceID", deviceID),
             outParam);
 
             return outParam.Value.ToString() ?? string.Empty;

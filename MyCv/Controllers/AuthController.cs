@@ -27,7 +27,7 @@ namespace MyCv.Controllers
             {
                 NickName = Username,
                 Password = Password
-            }, _context).Result;
+            },"", _context).Result;
             if (result == null)
             {
                 return Unauthorized("Invalid username or password");
