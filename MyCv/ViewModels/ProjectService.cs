@@ -26,19 +26,37 @@ namespace MyCv.ViewModels
             }
             return projects;
         }
-        public async Task<List<Project>> FilterProjects(string tag, string searchTerm)
+        public async Task<Project?> GetProjectByIdAsync(string projectId)
         {
             var allProjects = await GetCachedProjectsAsync(); // Önbellekten gelir
+            return allProjects.FirstOrDefault(p => p.ProjectId == projectId);
+        }
+        public async Task<List<Project>> FilterProjects(string searchValue)
+        {
+            var allProjects = await GetCachedProjectsAsync(); // Önbellekten (RAM) geliyor
 
-            var filtered = allProjects.AsQueryable();
+            if (string.IsNullOrWhiteSpace(searchValue))
+                return allProjects;
 
-            if (!string.IsNullOrEmpty(tag))
-                filtered = filtered.Where(p => p.Tags.Contains(tag));
+            // 1. Arama değerini virgüllere göre parçala ve temizle (boşlukları sil)
+            var searchTerms = searchValue.Split(',', StringSplitOptions.RemoveEmptyEntries)
+                                         .Select(s => s.Trim())
+                                         .ToList();
 
-            if (!string.IsNullOrEmpty(searchTerm))
-                filtered = filtered.Where(p => p.Title.Contains(searchTerm, StringComparison.OrdinalIgnoreCase));
+            // 2. Filtreleme işlemi
+            var filtered = allProjects.Where(p =>
+            {
+                // Her bir kelime için kontrol et
+                return searchTerms.Any(term =>
+                    // Koşul 1: Başlıkta geçiyor mu?
+                    (p.Title != null && p.Title.Contains(term, StringComparison.OrdinalIgnoreCase))
+                    ||
+                    // Koşul 2: Etiketlerin içinde geçiyor mu?
+                    (p.Tags != null && p.Tags.Contains(term, StringComparison.OrdinalIgnoreCase))
+                );
+            }).ToList();
 
-            return filtered.ToList();
+            return filtered;
         }
         public void ClearCache()
         {

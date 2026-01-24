@@ -14,10 +14,12 @@ namespace MyCv.ViewModels
             list = await _context.Projects.FromSqlRaw("EXEC GetAllProjects").ToListAsync();
             return list;
         }
-        public async Task<List<ProjectDetail>> GetProjectDetailsAsync(string projectId, AppDBContext _context)
+        public static async Task<List<ProjectDetail>> GetProjectDetailsAsync(string projectId, AppDBContext _context)
         {
-            return await _context.ProjectDetails
+            List<ProjectDetail> list = null;
+            list = await _context.ProjectDetails
                 .FromSqlRaw("EXEC GetProjectDetails @projectId", new SqlParameter("@projectId", projectId)).ToListAsync();
+            return list;
         }
 
         public static async Task CreateProject(vwProject project, AppDBContext _context)
