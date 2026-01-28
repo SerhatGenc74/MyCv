@@ -32,29 +32,11 @@ namespace MyCv.Controllers
             {
                 return Unauthorized("Invalid username or password");
             }
-            var token = GenerateJwtToken(result);
+            var token = GenerateJwtToken.Generate(result);
             Response.Headers.Add("Authorization", "Bearer " + token);
 
             return Ok(new { Token = token, Message = "Login successful" }); 
-        }
-        [NonAction]
-        public string GenerateJwtToken(string user)
-        {
-            var claims = new[]
-            {
-             new Claim(ClaimTypes.NameIdentifier, user)   
-            };
-            var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-            var token = new JwtSecurityToken(
-                issuer: "localhost:5000",
-                audience: "localhost:3000",
-                claims: claims,
-                expires: DateTime.Now.AddHours(1),
-                signingCredentials: creds);
-                
-            return new JwtSecurityTokenHandler().WriteToken(token);
-        }
+        }       
        
     }
 }

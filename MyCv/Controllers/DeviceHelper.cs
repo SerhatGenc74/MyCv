@@ -10,7 +10,7 @@
         }
 
         deviceId = Guid.NewGuid().ToString();
-
+        
         context.Response.Cookies.Append(
             cookieName,
             deviceId,
