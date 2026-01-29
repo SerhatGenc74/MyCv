@@ -1,0 +1,8 @@
+create TABLE AdminLoginAttempts
+(
+    Id INT IDENTITY PRIMARY KEY,
+    DeviceId UNIQUEIDENTIFIER NOT NULL,
+    FailedCount INT NOT NULL DEFAULT 0,
+    LockUntil DATETIME NULL,
+    LastAttempt DATETIME NOT NULL DEFAULT GETDATE()
+)

@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using MyCv.Models;
 using MyCv.Models.View;
-using MyCv.ViewModels;
+using MyCv.ViewModels.Operations;
 namespace MyCv.Controllers
 {
 

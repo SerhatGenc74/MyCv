@@ -4,7 +4,7 @@ using MyCv.Models;
 using MyCv.Models.View;
 using System.Data;
 
-namespace MyCv.ViewModels
+namespace MyCv.ViewModels.Operations
 {
     public class ProjectDBOp
     {
@@ -21,7 +21,6 @@ namespace MyCv.ViewModels
                 .FromSqlRaw("EXEC GetProjectDetails @projectId", new SqlParameter("@projectId", projectId)).ToListAsync();
             return list;
         }
-
         public static async Task CreateProject(vwProject project, AppDBContext _context)
         {
             // 1. DataTable'ı SQL'deki tiple (ProjectDetailsType) tam uyumlu oluşturuyoruz
@@ -64,6 +63,65 @@ namespace MyCv.ViewModels
                 new SqlParameter("@coverImgUrl", project.coverImgUrl ?? (object)DBNull.Value),
                 new SqlParameter("@tags", project.tags ?? (object)DBNull.Value),
                 detailsParam
+            );
+        }
+        public static async Task Update(vwProject project, AppDBContext _context)
+        {
+            // 1. DataTable'ı SQL'deki tiple (ProjectDetailsType) tam uyumlu oluşturuyoruz
+            DataTable detailsTable = new DataTable();
+            detailsTable.Columns.Add("id", typeof(int));             // 1. Kolon
+            detailsTable.Columns.Add("projectId", typeof(string));  // 2. Kolon
+            detailsTable.Columns.Add("type", typeof(string));       // 3. Kolon
+            detailsTable.Columns.Add("visibleContent", typeof(string)); // 4. Kolon
+            detailsTable.Columns.Add("content", typeof(string));    // 5. Kolon
+            detailsTable.Columns.Add("subContent", typeof(string)); // 6. Kolon
+            detailsTable.Columns.Add("deleteId", typeof(bool));     // 7. Kolon
+                                                                    // 
+            if (project.Details != null)
+            {
+                foreach (var detail in project.Details)
+                {
+                    detailsTable.Rows.Add(
+                        detail.Id,             // id
+                        project.ProjectId,    // projectId
+                        detail.Type,           // type
+                        detail.VisibleContent, // visibleContent
+                        detail.Content,        // content
+                        detail.SubContent,     // subContent
+                        detail.DeleteId        // deleteId
+                    );
+                }
+            }
+            var detailsParam = new SqlParameter("@details", detailsTable)
+            {
+                SqlDbType = SqlDbType.Structured,
+                TypeName = "dbo.ProjectDetailsType"
+            };
+            await _context.Database.ExecuteSqlRawAsync(
+                "EXEC UpdateProject @projectId, @title, @description, @coverImgUrl, @tags, @details",
+                new SqlParameter("@projectId", project.ProjectId),
+                new SqlParameter("@title", project.title ?? (object)DBNull.Value),
+                new SqlParameter("@description", project.description ?? (object)DBNull.Value),
+                new SqlParameter("@coverImgUrl", project.coverImgUrl ?? (object)DBNull.Value),
+                new SqlParameter("@tags", project.tags ?? (object)DBNull.Value),
+                detailsParam
+            );
+        }
+        public static async Task ChangeVisibility(string projectId, bool isDelete, AppDBContext _context)
+        {
+            var isDeleteParam = new SqlParameter("@isDelete", SqlDbType.Bit);
+            isDeleteParam.Value = isDelete;
+            await _context.Database.ExecuteSqlRawAsync(
+                "EXEC ChangeProjectVisibility @projectId, @isDelete",
+                new SqlParameter("@projectId", projectId),
+                isDeleteParam
+            );
+        }
+        public static async Task Delete(string projectId, AppDBContext _context)
+        {
+            await _context.Database.ExecuteSqlRawAsync(
+                "EXEC DeleteProject @projectId",
+                new SqlParameter("@projectId", projectId)
             );
         }
     }

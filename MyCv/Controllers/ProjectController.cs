@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MyCv.Models;
 using MyCv.Models.View;
-using MyCv.ViewModels;
+using MyCv.ViewModels.Operations;
+using MyCv.ViewModels.Services;
 
 namespace MyCv.Controllers
 {
@@ -19,27 +20,39 @@ namespace MyCv.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var projects = await service.GetCachedProjectsAsync();
+            var projects = await service.Filter("");
             return Ok(projects);
         }
         [HttpPost]
         public async Task<IActionResult> Index(string seach)
         {
-            var projects = await service.FilterProjects(seach);
+            var projects = await service.Filter(seach);
             return Ok(projects);
         }
         [HttpPost("Add")]
         public async Task<IActionResult> Add([FromBody] vwProject project)
         {
-            await ProjectDBOp.CreateProject(project, context);
+            await service.Add(project);
             return Ok("Saved");
         }
         [HttpPost("View")]
         public async Task<IActionResult> View(string projectId)
         {
-            var pInfo = await service.GetProjectByIdAsync(projectId);
-            var vwProject = await ProjectDBOp.GetProjectDetailsAsync(projectId, context);
-            return Ok(vwProject);
+            var project = await service.GetProjectInfo(projectId);
+
+            return Ok(project);
+        }
+        [HttpPost("ChangeVisibility")]
+        public async Task<IActionResult> ChangeVisibility(string projectId, bool isVisible)
+        {
+            await service.ChangeVisibility(projectId, isVisible);
+            return Ok("Visibility Changed");
+        }
+        [HttpDelete("Delete")]
+        public async Task<IActionResult> Delete(string projectId)
+        {
+            await service.Delete(projectId);
+            return Ok("Deleted");
         }
 
     }

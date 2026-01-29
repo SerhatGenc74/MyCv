@@ -4,24 +4,21 @@ using MyCv.Models;
 using MyCv.Models.View;
 using System.Data;
 
-namespace MyCv.ViewModels
+namespace MyCv.ViewModels.Operations
 {
     public class AdminDBOp
     {
         public static async Task<string> Login(User user, string deviceID, AppDBContext _context)
         {
-
-
-            var outParam = new SqlParameter("@userId", System.Data.SqlDbType.VarChar, 5)
+            var outParam = new SqlParameter("@userId", SqlDbType.VarChar, 5)
             {
-                Direction = System.Data.ParameterDirection.Output,
+                Direction = ParameterDirection.Output,
             };
             await _context.Database.ExecuteSqlRawAsync("EXEC AdminLogin @nickName, @Password, @deviceID, @userId OUTPUT",
              new SqlParameter("@nickName", user.NickName),
              new SqlParameter("@Password", user.Password),
              new SqlParameter("@deviceID", deviceID),
             outParam);
-
             return outParam.Value.ToString() ?? string.Empty;
         }
         public static async Task Add(User user, AppDBContext _context)
